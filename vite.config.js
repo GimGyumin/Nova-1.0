@@ -19,4 +19,7 @@ const getBasePath = () => {
 export default defineConfig({
   plugins: [react()],
   base: getBasePath(),
+  build: {
+    outDir: 'dist',
+  },
 });

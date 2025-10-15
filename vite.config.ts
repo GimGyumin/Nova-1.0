@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
     return {
       base: getBasePath(),
       build: {
-        outDir: 'docs',
+        outDir: 'dist',
       },
       server: {
         port: 3000,
