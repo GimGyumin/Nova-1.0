@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // GitHub 리포지토리 이름을 정확히 넣기!
-const repoName = 'Nova-AI-Planer';
+const repoName = 'Nova-1.0';
 
 export default defineConfig({
   plugins: [react()],

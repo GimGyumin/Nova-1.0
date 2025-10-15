@@ -4,7 +4,7 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // GitHub 리포지토리 이름을 정확히 넣기!
-const repoName = 'Nova-AI-Planer';
+const repoName = 'Nova-1.0';
 
 // FIX: `__dirname` is not available in ES modules. This defines it using `import.meta.url`.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
