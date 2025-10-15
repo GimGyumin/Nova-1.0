@@ -2,17 +2,28 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-
-// GitHub 리포지토리 이름을 정확히 넣기!
-const repoName = 'Nova-1.0';
+import pkg from './package.json';
 
 // FIX: `__dirname` is not available in ES modules. This defines it using `import.meta.url`.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const getBasePath = () => {
+  if (!pkg.homepage) {
+    return '/';
+  }
+  const homepageUrl = new URL(pkg.homepage);
+  let pathname = homepageUrl.pathname;
+  // Vite's 'base' option expects a path that starts and ends with a slash.
+  if (!pathname.endsWith('/')) {
+    pathname += '/';
+  }
+  return pathname;
+}
+
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      base: `/${repoName}/`,
+      base: getBasePath(),
       build: {
         outDir: 'docs',
       },
