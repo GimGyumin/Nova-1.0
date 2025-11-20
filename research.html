@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nova - Research Logger (분리된 연구용 수집 페이지)</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:16px;background:#f7f7fb;color:#111}
+    .container{max-width:820px;margin:0 auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    label{display:block;margin-top:12px;font-weight:600}
+    input[type=text],textarea,select,input[type=date],input[type=number]{width:100%;padding:8px;margin-top:6px;border:1px solid #ddd;border-radius:6px}
+    .row{display:flex;gap:12px}
+    .row>div{flex:1}
+    .actions{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+    button{padding:8px 12px;border-radius:6px;border:none;background:#2563eb;color:#fff;cursor:pointer}
+    button.secondary{background:#6b7280}
+    .small{padding:6px 10px;font-size:14px}
+    table{width:100%;border-collapse:collapse;margin-top:16px}
+    th,td{border:1px solid #eee;padding:8px;text-align:left}
+    .note{font-size:13px;color:#374151;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Nova — Research Logger</h1>
+    <p class="note">이 페이지는 앱과 완전히 분리된 연구용 데이터 수집 도구입니다. 모든 기록은 브라우저 로컬에 저장되며, 원할 때 JSON으로 내보낼 수 있습니다.</p>
+    <div style="margin-top:8px;margin-bottom:12px"><a href="/Nova-AI-Planer/" style="color:#2563eb;text-decoration:underline">← 사이트로 돌아가기</a></div>
+
+    <form id="logForm">
+      <div class="row">
+        <div>
+          <label for="date">날짜</label>
+          <input type="date" id="date" required />
+        </div>
+        <div>
+          <label for="task">과제 ID / 이름</label>
+          <input type="text" id="task" placeholder="예: 영어단어 10개" />
+        </div>
+      </div>
+
+      <label for="completed">과제 완료 여부</label>
+      <select id="completed">
+        <option value="Y">Y (완료)</option>
+        <option value="N">N (미완료)</option>
+      </select>
+
+      <label for="delay_desc">지연 행동(서술)</label>
+      <textarea id="delay_desc" rows="2" placeholder="예: 계획보다 1시간 늦게 시작함"></textarea>
+
+      <div class="row">
+        <div>
+          <label for="delay_minutes">시작 지연(분)</label>
+          <input type="number" id="delay_minutes" min="0" placeholder="예: 60" />
+        </div>
+        <div>
+          <label for="focus">집중도 (1-5)</label>
+          <input type="number" id="focus" min="1" max="5" value="3" />
+        </div>
+        <div>
+          <label for="fatigue">피로감 (1-5)</label>
+          <input type="number" id="fatigue" min="1" max="5" value="2" />
+        </div>
+      </div>
+
+      <label for="notes">기타 관찰 / Nova 사용 여부(자유서술)</label>
+      <textarea id="notes" rows="3" placeholder="예: WOOP 설정 사용함, AI 코칭은 사용 안함"></textarea>
+
+      <div class="actions">
+        <button type="submit">저장</button>
+        <button type="button" id="exportBtn" class="secondary small">JSON 내보내기</button>
+        <button type="button" id="clearBtn" class="secondary small">전체 삭제</button>
+        <button type="button" id="downloadCSV" class="secondary small">CSV 내보내기</button>
+      </div>
+    </form>
+
+    <div id="status" class="note"></div>
+
+    <table id="logsTable" aria-live="polite">
+      <thead><tr><th>날짜</th><th>과제</th><th>완료</th><th>지연(분)</th><th>집중</th><th>피로</th><th>메모</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div style="margin-top:18px;font-size:13px;color:#6b7280;text-align:center">© 2025 GimGyuMin</div>
+  </div>
+
+  <!-- Password modal -->
+  <div id="pwModal" style="position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999">
+    <div style="background:#fff;padding:20px;border-radius:8px;max-width:420px;width:90%;text-align:center;font-family:system-ui">
+      <h3 style="margin:0 0 8px">연구용 페이지 접근</h3>
+      <p style="margin:0 0 12px;color:#374151">비밀번호를 입력하세요.</p>
+      <input id="pwInput" type="password" placeholder="비밀번호" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:12px" />
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button id="pwSubmit" style="padding:8px 12px;border-radius:6px;background:#2563eb;color:#fff;border:none">입력</button>
+        <a href="/Nova-AI-Planer/" style="display:inline-block;padding:8px 12px;border-radius:6px;background:#6b7280;color:#fff;text-decoration:none">취소</a>
+      </div>
+      <div id="pwMsg" style="margin-top:8px;color:#e11d48"></div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="/Nova-AI-Planer/research.js"></script>
+</body>
+</html>

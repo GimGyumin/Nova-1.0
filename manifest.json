@@ -2,21 +2,21 @@
   "name": "Nova AI Planner",
   "short_name": "Nova",
   "description": "AI 기반 목표 설정 및 관리 플래너",
-  "start_url": "/Nova-AI-Planer-beta-/",
-  "scope": "/Nova-AI-Planer-beta-/",
+  "start_url": "/Nova-AI-Planer/",
+  "scope": "/Nova-AI-Planer/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./nova-192.png",
+      "src": "/Nova-AI-Planer/nova-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "./nova-512.png",
+      "src": "/Nova-AI-Planer/nova-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
