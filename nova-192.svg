@@ -1,0 +1,47 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient background (Blue/Indigo Nova style) -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="192" height="192" rx="40" fill="url(#bgGradient)"/>
+  
+  <!-- iOS Reminders Icon Style - Checklist -->
+  <g filter="drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2))">
+    <!-- Paper/List background -->
+    <rect x="40" y="44" width="112" height="104" rx="6" fill="white"/>
+    
+    <!-- Horizontal lines (list items) -->
+    <!-- Line 1 -->
+    <line x1="56" y1="64" x2="136" y2="64" stroke="#6366f1" stroke-width="2.5" strokeLinecap="round"/>
+    
+    <!-- Line 2 -->
+    <line x1="56" y1="82" x2="136" y2="82" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Line 3 -->
+    <line x1="56" y1="100" x2="136" y2="100" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Line 4 -->
+    <line x1="56" y1="118" x2="136" y2="118" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Checkmarks -->
+    <!-- First item - Checked (indigo) -->
+    <g transform="translate(44, 58)">
+      <circle cx="6" cy="6" r="4" fill="#6366f1"/>
+      <path d="M3 6L5 8L8 4" fill="none" stroke="white" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </g>
+    
+    <!-- Second item - Circle (unchecked) -->
+    <circle cx="50" cy="82" r="3.5" fill="white" stroke="#999" stroke-width="1.5"/>
+    
+    <!-- Third item - Circle (unchecked) -->
+    <circle cx="50" cy="100" r="3.5" fill="white" stroke="#999" stroke-width="1.5"/>
+    
+    <!-- Fourth item - Circle (unchecked) -->
+    <circle cx="50" cy="118" r="3.5" fill="white" stroke="#999" stroke-width="1.5"/>
+  </g>
+</svg>
