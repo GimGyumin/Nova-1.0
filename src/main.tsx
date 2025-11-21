@@ -59,13 +59,13 @@ const PWAInstallPrompt: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full">
         <div className="text-center mb-4">
           <div className="w-16 h-16 bg-indigo-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
-            <span className="text-white text-2xl font-bold">N</span>
+            <span className="text-white text-2xl font-bold">AI</span>
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             앱으로 설치하기
           </h2>
           <p className="text-gray-600 dark:text-gray-300 text-sm">
-            Nova를 홈 화면에 추가하여 더 편리하게 사용하세요.
+            AI Scheduler를 홈 화면에 추가하여 더 편리하게 사용하세요.
           </p>
         </div>
 
@@ -170,7 +170,7 @@ const translations = {
     error_deadline_required: '마감일을 선택해주세요.',
     
     // Main Page
-    my_assignments_title: '📚 과제 스케줄러',
+    my_assignments_title: '🤖 AI Scheduler',
     today_schedule_title: '🎯 오늘 자동 배정된 일정',
     all_assignments_title: '📋 전체 과제 목록',
     sort_label_auto: '자동 정렬',
