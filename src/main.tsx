@@ -170,9 +170,9 @@ const translations = {
     error_deadline_required: '마감일을 선택해주세요.',
     
     // Main Page
-    my_assignments_title: '🤖 AI Scheduler',
-    today_schedule_title: '🎯 오늘 자동 배정된 일정',
-    all_assignments_title: '📋 전체 과제 목록',
+    my_assignments_title: 'AI Scheduler',
+    today_schedule_title: '오늘 자동 배정된 일정',
+    all_assignments_title: '전체 과제 목록',
     sort_label_auto: '자동 정렬',
     sort_label_deadline: '마감일순',
     sort_label_difficulty: '난이도순',
@@ -314,9 +314,9 @@ const translations = {
     settings_generate_link: '공유 링크 생성',
     settings_copy_link: '복사',
     link_copied_toast: '링크가 클립보드에 복사되었습니다.',
-    short_url_created: '📎 단축 URL이 생성되었습니다!',
-    share_link_created: '🔗 공유 링크가 생성되었습니다!',
-    short_url_failed: '⚠️ 단축 URL 생성에 실패하여 기본 링크를 사용합니다.',
+    short_url_created: '단축 URL이 생성되었습니다!',
+    share_link_created: '공유 링크가 생성되었습니다!',
+    short_url_failed: '단축 URL 생성에 실패하여 기본 링크를 사용합니다.',
     no_data_to_share: '공유할 목표가 없습니다. 먼저 목표를 추가해주세요.',
 
     // 사용방법
@@ -530,9 +530,9 @@ const translations = {
     settings_generate_link: 'Generate Share Link',
     settings_copy_link: 'Copy',
     link_copied_toast: 'Link copied to clipboard.',
-    short_url_created: '📎 Short URL created successfully!',
-    share_link_created: '🔗 Share link generated!',
-    short_url_failed: '⚠️ Short URL creation failed, using default link.',
+    short_url_created: 'Short URL created successfully!',
+    share_link_created: 'Share link generated!',
+    short_url_failed: 'Short URL creation failed, using default link.',
     no_data_to_share: 'No goals to share. Please add goals first.',
 
     // Usage Guide
@@ -1780,7 +1780,7 @@ const Header: React.FC<{ t: (key: string) => any; isSelectionMode: boolean; sele
                                         <span style={{ fontSize: '20px' }}>👤</span>
                                     )
                                 ) : (
-                                    <span style={{ fontSize: '20px' }}>👤</span>
+                                    <span>Login</span>
                                 )}
                             </button>
                             {isProfilePopoverOpen && (
@@ -1798,12 +1798,12 @@ const Header: React.FC<{ t: (key: string) => any; isSelectionMode: boolean; sele
                                                     <span>{icons.settings} {t('profile_settings')}</span>
                                                 </button>
                                                 <button onClick={() => { onLogout(); setIsProfilePopoverOpen(false); }} className="popover-action-button">
-                                                    <span>🚪 {t('profile_logout')}</span>
+                                                    <span>{t('profile_logout')}</span>
                                                 </button>
                                             </>
                                         ) : (
                                             <button onClick={() => { onLogin(); setIsProfilePopoverOpen(false); }} className="popover-action-button">
-                                                <span>🔑 {t('profile_login')}</span>
+                                                <span>{t('profile_login')}</span>
                                             </button>
                                         )}
                                     </div>
@@ -1880,7 +1880,7 @@ const TodoList: React.FC<{
                     borderRadius: '12px',
                     margin: '12px 0'
                 }}>
-                    <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎉</div>
+                    <div style={{ fontSize: '48px', marginBottom: '12px' }}>✓</div>
                     <div style={{ fontSize: '18px', fontWeight: '600', color: 'var(--success-color)', marginBottom: '4px' }}>
                         모두 완료했습니다!
                     </div>
@@ -1995,9 +1995,9 @@ const TodoItem: React.FC<{
         const diffTime = deadlineDate.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
-        if (diffDays < 0) return `⚠️ D+${Math.abs(diffDays)}`;
-        if (diffDays === 0) return '🔥 D-Day';
-        return `📅 D-${diffDays}`;
+        if (diffDays < 0) return `D+${Math.abs(diffDays)}`;
+        if (diffDays === 0) return 'D-Day';
+        return `D-${diffDays}`;
     };
     
     return (
@@ -2853,14 +2853,14 @@ const SettingsModal: React.FC<{
                                     disabled={isGeneratingLink}
                                 >
                                     <span className="action-text">
-                                        {isGeneratingLink ? '🔗 단축 URL 생성 중...' : t('settings_generate_link')}
+                                        {isGeneratingLink ? '단축 URL 생성 중...' : t('settings_generate_link')}
                                     </span>
                                 </button>
                             )}
                             {shareableLink && (
                                 <div className="share-link-container">
                                     <div style={{ marginBottom: '8px', fontSize: '12px', opacity: 0.7 }}>
-                                        {shareableLink.length < 100 ? '📎 단축 URL' : '🔗 일반 링크'} 
+                                        {shareableLink.length < 100 ? '단축 URL' : '일반 링크'} 
                                         ({shareableLink.length}자)
                                     </div>
                                     <input type="text" readOnly value={shareableLink} onClick={(e) => (e.target as HTMLInputElement).select()} />
@@ -2902,7 +2902,7 @@ const SettingsModal: React.FC<{
                                     onClick={onGoogleLogin}
                                     style={{ justifyContent: 'center', backgroundColor: 'var(--primary-color)', color: 'white' }}
                                 >
-                                    <span className="action-text">🔐 Google로 로그인</span>
+                                    <span className="action-text">Google로 로그인</span>
                                 </button>
                             )}
                         </div>
