@@ -1585,3 +1585,28 @@ input:checked + .slider:before { -webkit-transform: translateX(20px); -ms-transf
   .site-footer { padding: 12px 0; }
   .site-footer a { font-size: 0.9rem; }
 }
+/* Profile Button Styles */
+.profile-button {
+  position: relative;
+  padding: 0 !important;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-button img {
+  border: 2px solid var(--border-color);
+  object-fit: cover;
+}
+
+.profile-button:hover img {
+  border-color: var(--primary-color);
+}
+
+.profile-popover .popover-action-button span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

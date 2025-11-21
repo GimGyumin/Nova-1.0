@@ -178,6 +178,9 @@ const translations = {
     sort_label_difficulty: '난이도순',
     sort_label_time: '소요시간순',
     add_new_assignment_button: '+ 새 과제 추가',
+    profile_login: '로그인',
+    profile_logout: '로그아웃',
+    profile_settings: '설정',
     filter_all: '전체',
     filter_active: '진행중',
     filter_completed: '완료',
@@ -390,6 +393,9 @@ const translations = {
     sort_label_ai: 'AI Recommended',
     ai_sorting_button: 'Sorting...',
     add_new_goal_button_label: 'Add New Goal',
+    profile_login: 'Login',
+    profile_logout: 'Logout',
+    profile_settings: 'Settings',
     filter_all: 'All Goals',
     filter_active: 'In Progress',
     filter_completed: 'Completed',
@@ -1587,6 +1593,8 @@ const App: React.FC = () => {
                         onAddGoal={() => setIsGoalAssistantOpen(true)}
                         user={user}
                         onSync={handleSync}
+                        onLogin={handleGoogleLogin}
+                        onLogout={handleLogout}
                     />
                     {isViewModeCalendar ? (
                         <CalendarView todos={todos} t={t} onGoalClick={setInfoTodo} language={language} />
@@ -1649,12 +1657,14 @@ const App: React.FC = () => {
     );
 };
 
-const Header: React.FC<{ t: (key: string) => any; isSelectionMode: boolean; selectedCount: number; onCancelSelection: () => void; onDeleteSelected: () => void; isViewModeCalendar: boolean; onToggleViewMode: () => void; isAiSorting: boolean; sortType: string; onSort: (type: string) => void; filter: string; onFilter: (type: string) => void; onSetSelectionMode: () => void; onOpenSettings: () => void; onAddGoal: () => void; user: User | null; onSync: () => void; }> = ({ t, isSelectionMode, selectedCount, onCancelSelection, onDeleteSelected, isViewModeCalendar, onToggleViewMode, isAiSorting, sortType, onSort, filter, onFilter, onSetSelectionMode, onOpenSettings, onAddGoal, user, onSync }) => {
+const Header: React.FC<{ t: (key: string) => any; isSelectionMode: boolean; selectedCount: number; onCancelSelection: () => void; onDeleteSelected: () => void; isViewModeCalendar: boolean; onToggleViewMode: () => void; isAiSorting: boolean; sortType: string; onSort: (type: string) => void; filter: string; onFilter: (type: string) => void; onSetSelectionMode: () => void; onOpenSettings: () => void; onAddGoal: () => void; user: User | null; onSync: () => void; onLogin: () => void; onLogout: () => void; }> = ({ t, isSelectionMode, selectedCount, onCancelSelection, onDeleteSelected, isViewModeCalendar, onToggleViewMode, isAiSorting, sortType, onSort, filter, onFilter, onSetSelectionMode, onOpenSettings, onAddGoal, user, onSync, onLogin, onLogout }) => {
     const [isFilterPopoverOpen, setIsFilterPopoverOpen] = useState(false);
+    const [isProfilePopoverOpen, setIsProfilePopoverOpen] = useState(false);
 
     useEffect(() => {
         const closePopovers = () => {
             setIsFilterPopoverOpen(false);
+            setIsProfilePopoverOpen(false);
         };
         document.addEventListener('click', closePopovers);
         document.addEventListener('touchstart', closePopovers);
@@ -1667,6 +1677,11 @@ const Header: React.FC<{ t: (key: string) => any; isSelectionMode: boolean; sele
     const toggleFilterPopover = (e: React.MouseEvent | React.TouchEvent) => {
         e.stopPropagation();
         setIsFilterPopoverOpen(prev => !prev);
+    };
+
+    const toggleProfilePopover = (e: React.MouseEvent | React.TouchEvent) => {
+        e.stopPropagation();
+        setIsProfilePopoverOpen(prev => !prev);
     };
 
     const stopPropagation = (e: React.MouseEvent | React.TouchEvent) => {
@@ -1716,7 +1731,54 @@ const Header: React.FC<{ t: (key: string) => any; isSelectionMode: boolean; sele
                 {isSelectionMode ? (
                     <button onClick={onDeleteSelected} className="header-action-button destructive">{t('delete_selected_button_label').replace('{count}', String(selectedCount))}</button>
                 ) : (
-                    <button onClick={onAddGoal} className="header-icon-button" style={{ transition: 'all 0.2s ease' }} aria-label={t('add_new_assignment_button')}>{icons.add}</button>
+                    <>
+                        <button onClick={onAddGoal} className="header-icon-button" style={{ transition: 'all 0.2s ease' }} aria-label={t('add_new_assignment_button')}>{icons.add}</button>
+                        <div className="filter-sort-container">
+                            <button 
+                                onClick={toggleProfilePopover} 
+                                onTouchStart={toggleProfilePopover} 
+                                className="header-icon-button profile-button" 
+                                style={{ transition: 'all 0.2s ease' }} 
+                                aria-label="프로필"
+                            >
+                                {user ? (
+                                    user.photoURL ? (
+                                        <img src={user.photoURL} alt="프로필" style={{ width: '28px', height: '28px', borderRadius: '50%' }} />
+                                    ) : (
+                                        <span style={{ fontSize: '20px' }}>👤</span>
+                                    )
+                                ) : (
+                                    <span style={{ fontSize: '20px' }}>👤</span>
+                                )}
+                            </button>
+                            {isProfilePopoverOpen && (
+                                <div className="profile-popover" onClick={stopPropagation} onTouchStart={stopPropagation}>
+                                    {user && user.displayName && (
+                                        <div className="popover-section" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '8px', marginBottom: '8px' }}>
+                                            <div style={{ padding: '4px 0', fontWeight: 500, color: 'var(--text-primary)' }}>{user.displayName}</div>
+                                            {user.email && <div style={{ padding: '4px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>{user.email}</div>}
+                                        </div>
+                                    )}
+                                    <div className="popover-section">
+                                        {user ? (
+                                            <>
+                                                <button onClick={() => { onOpenSettings(); setIsProfilePopoverOpen(false); }} className="popover-action-button">
+                                                    <span>{icons.settings} {t('profile_settings')}</span>
+                                                </button>
+                                                <button onClick={() => { onLogout(); setIsProfilePopoverOpen(false); }} className="popover-action-button">
+                                                    <span>🚪 {t('profile_logout')}</span>
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button onClick={() => { onLogin(); setIsProfilePopoverOpen(false); }} className="popover-action-button">
+                                                <span>🔑 {t('profile_login')}</span>
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
         </header>
