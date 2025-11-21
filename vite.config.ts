@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      base: '/Nova-AI-Planer/',
+      base: '/Nova-1.0/',
       build: {
         outDir: 'dist',
       },
