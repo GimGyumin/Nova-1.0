@@ -293,6 +293,15 @@ const translations = {
     settings_data_header_desc: '목표 데이터를 파일로 내보내거나, 파일에서 가져옵니다.',
     settings_background_header: '배경화면',
     settings_background_header_desc: '앱의 배경화면 스타일을 변경하여 개성을 표현해 보세요.',
+    settings_display_header: '화면 표시',
+    settings_display_header_desc: '표시할 섹션을 선택하세요.',
+    display_option_both: '둘 다 보기',
+    display_option_today: '오늘 일정만',
+    display_option_all: '전체 과제만',
+    settings_sync_header: '자동 동기화',
+    settings_sync_header_desc: '데이터 변경 시 자동으로 클라우드에 동기화합니다.',
+    sync_auto_enabled: '자동 동기화 켜짐',
+    sync_auto_disabled: '자동 동기화 꺼짐',
     data_importing: '가져오는 중...',
     data_exporting: '내보내는 중...',
     data_deleting: '삭제 중...',
@@ -500,6 +509,15 @@ const translations = {
     settings_data_header_desc: 'Export or import your goal data.',
     settings_background_header: 'Background',
     settings_background_header_desc: "Change the app's background style to express your personality.",
+    settings_display_header: 'Display Options',
+    settings_display_header_desc: 'Choose which sections to display.',
+    display_option_both: 'Show Both',
+    display_option_today: 'Today Only',
+    display_option_all: 'All Tasks Only',
+    settings_sync_header: 'Auto Sync',
+    settings_sync_header_desc: 'Automatically sync data to cloud when changes are detected.',
+    sync_auto_enabled: 'Auto sync enabled',
+    sync_auto_disabled: 'Auto sync disabled',
     data_importing: 'Importing...',
     data_exporting: 'Exporting...',
     data_deleting: 'Deleting...',
@@ -820,6 +838,13 @@ const App: React.FC = () => {
     });
     
     const [backgroundTheme, setBackgroundTheme] = useState<string>('default');
+    const [displayOption, setDisplayOption] = useState<'both' | 'today' | 'all'>(() => {
+        return localStorage.getItem('nova-display-option') as 'both' | 'today' | 'all' || 'both';
+    });
+    const [autoSync, setAutoSync] = useState<boolean>(() => {
+        const saved = localStorage.getItem('nova-auto-sync');
+        return saved === null ? true : saved === 'true'; // 기본값 true
+    });
     const [isGoalAssistantOpen, setIsGoalAssistantOpen] = useState<boolean>(false);
     const [editingTodo, setEditingTodo] = useState<Goal | null>(null);
     const [infoTodo, setInfoTodo] = useState<Goal | null>(null);
@@ -1192,6 +1217,8 @@ const App: React.FC = () => {
     }, [themeMode, isDarkMode]);
 
     useEffect(() => { localStorage.setItem('nova-lang', language); }, [language]);
+    useEffect(() => { localStorage.setItem('nova-display-option', displayOption); }, [displayOption]);
+    useEffect(() => { localStorage.setItem('nova-auto-sync', String(autoSync)); }, [autoSync]);
     
     // todos 저장 (로컬 + Firestore)
     useEffect(() => { 
@@ -1202,14 +1229,14 @@ const App: React.FC = () => {
             localStorage.setItem('nova-todos', JSON.stringify(todos));
         }
         
-        // Firestore에 저장 (로그인된 경우)
-        if (user && todos.length > 0) {
+        // Firestore에 저장 (로그인된 경우 + 자동 동기화 켜져있을 때)
+        if (user && todos.length > 0 && autoSync) {
             const timeoutId = setTimeout(() => {
                 saveUserDataToFirestore(todos, dailyAllocations);
-            }, 500); // 디바운스: 0.5초 후에 저장
+            }, 3000); // 자동 동기화: 3초 후에 저장
             return () => clearTimeout(timeoutId);
         }
-    }, [todos, user, isLoadingUser]);
+    }, [todos, user, isLoadingUser, autoSync]);
     
     // allocations 저장 (로컬 + Firestore)
     useEffect(() => { 
@@ -1220,14 +1247,14 @@ const App: React.FC = () => {
             localStorage.setItem('nova-allocations', JSON.stringify(dailyAllocations));
         }
         
-        // Firestore에 저장 (로그인된 경우)
-        if (user && dailyAllocations.length > 0) {
+        // Firestore에 저장 (로그인된 경우 + 자동 동기화 켜져있을 때)
+        if (user && dailyAllocations.length > 0 && autoSync) {
             const timeoutId = setTimeout(() => {
                 saveUserDataToFirestore(todos, dailyAllocations);
-            }, 500); // 디바운스: 0.5초 후에 저장
+            }, 3000); // 자동 동기화: 3초 후에 저장
             return () => clearTimeout(timeoutId);
         }
-    }, [dailyAllocations, user, isLoadingUser]);
+    }, [dailyAllocations, user, isLoadingUser, autoSync]);
     
     useEffect(() => { localStorage.setItem('nova-api-key', apiKey); }, [apiKey]);
     useEffect(() => { localStorage.setItem('nova-offline-mode', String(isOfflineMode)); }, [isOfflineMode]);
@@ -1611,7 +1638,8 @@ const App: React.FC = () => {
                             randomEncouragement={randomEncouragement} 
                             isSelectionMode={isSelectionMode} 
                             selectedTodoIds={selectedTodoIds} 
-                            onSelectTodo={handleSelectTodo} 
+                            onSelectTodo={handleSelectTodo}
+                            displayOption={displayOption}
                         />
                     )}
                 </div>
@@ -1647,6 +1675,10 @@ const App: React.FC = () => {
                 user={user}
                 onGoogleLogin={handleGoogleLogin}
                 onLogout={handleLogout}
+                displayOption={displayOption}
+                onSetDisplayOption={setDisplayOption}
+                autoSync={autoSync}
+                onToggleAutoSync={() => setAutoSync(!autoSync)}
             />}
             {isVersionInfoOpen && <VersionInfoModal onClose={() => setIsVersionInfoOpen(false)} t={t} />}
             {isUsageGuideOpen && <UsageGuideModal onClose={() => setIsUsageGuideOpen(false)} t={t} />}
@@ -1797,8 +1829,9 @@ const TodoList: React.FC<{
     randomEncouragement: string; 
     isSelectionMode: boolean; 
     selectedTodoIds: Set<number>; 
-    onSelectTodo: (id: number) => void; 
-}> = ({ todos, todayAssignments, onToggleComplete, onDelete, onEdit, onInfo, t, filter, randomEncouragement, isSelectionMode, selectedTodoIds, onSelectTodo }) => {
+    onSelectTodo: (id: number) => void;
+    displayOption: 'both' | 'today' | 'all';
+}> = ({ todos, todayAssignments, onToggleComplete, onDelete, onEdit, onInfo, t, filter, randomEncouragement, isSelectionMode, selectedTodoIds, onSelectTodo, displayOption }) => {
     
     // 완료율 계산
     const completedCount = todos.filter(t => t.completed).length;
@@ -1865,10 +1898,13 @@ const TodoList: React.FC<{
         return <div className="empty-message"><p>{t(messageKey)}</p>{filter === 'all' && <span>{randomEncouragement}</span>}</div>;
     }
 
+    const showTodaySection = (displayOption === 'both' || displayOption === 'today') && hasTodayAssignments;
+    const showAllSection = (displayOption === 'both' || displayOption === 'all') && todos.length > 0;
+
     return (
         <div>
-            {todaySection}
-            {todos.length > 0 && (
+            {showTodaySection && todaySection}
+            {showAllSection && (
                 <div className="all-assignments-section">
                     <h2 className="section-title">{t('all_assignments_title')} ({totalCount}개)</h2>
                     <ul>
@@ -2590,11 +2626,16 @@ const SettingsModal: React.FC<{
     user: User | null;
     onGoogleLogin: () => void;
     onLogout: () => void;
+    displayOption: 'both' | 'today' | 'all';
+    onSetDisplayOption: (option: 'both' | 'today' | 'all') => void;
+    autoSync: boolean;
+    onToggleAutoSync: () => void;
 }> = ({
     onClose, isDarkMode, onToggleDarkMode, themeMode, onThemeChange, backgroundTheme, onSetBackgroundTheme,
     onExportData, onImportData, setAlertConfig, onDeleteAllData, dataActionStatus,
     language, onSetLanguage, t, todos, setToastMessage, onOpenVersionInfo, onOpenUsageGuide,
-    apiKey, onSetApiKey, isOfflineMode, onToggleOfflineMode, user, onGoogleLogin, onLogout
+    apiKey, onSetApiKey, isOfflineMode, onToggleOfflineMode, user, onGoogleLogin, onLogout,
+    displayOption, onSetDisplayOption, autoSync, onToggleAutoSync
 }) => {
     const [isClosing, handleClose] = useModalAnimation(onClose);
     const [activeTab, setActiveTab] = useState('appearance');
@@ -2705,43 +2746,42 @@ const SettingsModal: React.FC<{
             case 'general':
                 return (
                     <>
-                        <div className="settings-section-header">계정</div>
+                        <div className="settings-section-header">{t('settings_display_header')}</div>
+                        <div className="settings-section-desc">{t('settings_display_header_desc')}</div>
                         <div className="settings-section-body">
-                            {user ? (
-                                <>
-                                    <div className="settings-item" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-                                            {user.photoURL && (
-                                                <img 
-                                                    src={user.photoURL} 
-                                                    alt="Profile" 
-                                                    style={{ width: '40px', height: '40px', borderRadius: '50%' }}
-                                                />
-                                            )}
-                                            <div style={{ flex: 1 }}>
-                                                <div style={{ fontWeight: '600' }}>{user.displayName || '사용자'}</div>
-                                                <div style={{ fontSize: '13px', opacity: 0.7 }}>{user.email}</div>
+                            <div className="settings-item nav-indicator" onClick={() => onSetDisplayOption('both')}>
+                                <span>{t('display_option_both')}</span>
+                                {displayOption === 'both' && icons.check}
+                            </div>
+                            <div className="settings-item nav-indicator" onClick={() => onSetDisplayOption('today')}>
+                                <span>{t('display_option_today')}</span>
+                                {displayOption === 'today' && icons.check}
+                            </div>
+                            <div className="settings-item nav-indicator" onClick={() => onSetDisplayOption('all')}>
+                                <span>{t('display_option_all')}</span>
+                                {displayOption === 'all' && icons.check}
+                            </div>
+                        </div>
+                        {user && (
+                            <>
+                                <div className="settings-section-header">{t('settings_sync_header')}</div>
+                                <div className="settings-section-desc">{t('settings_sync_header_desc')}</div>
+                                <div className="settings-section-body">
+                                    <label className="settings-item">
+                                        <div>
+                                            <span>{autoSync ? t('sync_auto_enabled') : t('sync_auto_disabled')}</span>
+                                            <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '4px' }}>
+                                                {autoSync ? '변경 감지 시 3초 후 자동 저장' : '수동 동기화만 가능'}
                                             </div>
                                         </div>
-                                    </div>
-                                    <button 
-                                        className="settings-item action-item" 
-                                        onClick={onLogout}
-                                        style={{ justifyContent: 'center' }}
-                                    >
-                                        <span className="action-text">로그아웃</span>
-                                    </button>
-                                </>
-                            ) : (
-                                <button 
-                                    className="settings-item action-item" 
-                                    onClick={onGoogleLogin}
-                                    style={{ justifyContent: 'center', backgroundColor: 'var(--primary-color)', color: 'white' }}
-                                >
-                                    <span className="action-text">🔐 Google로 로그인</span>
-                                </button>
-                            )}
-                        </div>
+                                        <div className="theme-toggle-switch">
+                                            <input type="checkbox" checked={autoSync} onChange={onToggleAutoSync} />
+                                            <span className="slider round"></span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </>
+                        )}
                         <div className="settings-section-header">{t('settings_api_key')}</div>
                         <div className="settings-section-body">
                             <div className="settings-item">
@@ -2826,6 +2866,44 @@ const SettingsModal: React.FC<{
                                     <input type="text" readOnly value={shareableLink} onClick={(e) => (e.target as HTMLInputElement).select()} />
                                     <button onClick={handleCopyLink}>{t('settings_copy_link')}</button>
                                 </div>
+                            )}
+                        </div>
+
+                        <div className="settings-section-header">계정</div>
+                        <div className="settings-section-body">
+                            {user ? (
+                                <>
+                                    <div className="settings-item" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+                                            {user.photoURL && (
+                                                <img 
+                                                    src={user.photoURL} 
+                                                    alt="Profile" 
+                                                    style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                                                />
+                                            )}
+                                            <div style={{ flex: 1 }}>
+                                                <div style={{ fontWeight: '600' }}>{user.displayName || '사용자'}</div>
+                                                <div style={{ fontSize: '13px', opacity: 0.7 }}>{user.email}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        className="settings-item action-item" 
+                                        onClick={onLogout}
+                                        style={{ justifyContent: 'center' }}
+                                    >
+                                        <span className="action-text">로그아웃</span>
+                                    </button>
+                                </>
+                            ) : (
+                                <button 
+                                    className="settings-item action-item" 
+                                    onClick={onGoogleLogin}
+                                    style={{ justifyContent: 'center', backgroundColor: 'var(--primary-color)', color: 'white' }}
+                                >
+                                    <span className="action-text">🔐 Google로 로그인</span>
+                                </button>
                             )}
                         </div>
 
