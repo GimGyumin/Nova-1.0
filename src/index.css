@@ -392,7 +392,7 @@ header {
 .header-inline-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .header-icon-button {
@@ -403,6 +403,11 @@ header {
   justify-content: center;
   width: 32px;
   height: 32px;
+  transition: transform 0.2s ease;
+}
+
+.header-icon-button:hover {
+  transform: scale(1.05);
 }
 
 .header-icon-button svg {
@@ -679,7 +684,7 @@ li.selected .swipeable-content {
   flex-grow: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   margin-left: 12px;
   min-width: 0; /* Important for flexbox truncation */
 }
@@ -708,7 +713,7 @@ li.selection-mode .todo-actions-and-meta {
 .todo-meta-badges {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
 .streak-indicator {
@@ -742,7 +747,7 @@ li.selected .todo-deadline {
 .todo-buttons {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
 .delete-button, .info-button {
@@ -1127,7 +1132,7 @@ li.selection-mode.selected .checkbox-container .checkmark:after {
 }
 
 .settings-tab-content {
-  animation: settings-content-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: settings-content-in 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .settings-section-header {
@@ -1176,7 +1181,7 @@ li.selection-mode.selected .checkbox-container .checkmark:after {
 .settings-item-value-with-icon {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     color: var(--text-secondary-color);
 }
 .settings-item-value-with-icon svg {
@@ -1193,7 +1198,7 @@ li.selection-mode.selected .checkbox-container .checkmark:after {
 .share-link-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   padding: 8px;
 }
 .share-link-container input[type="text"] {
@@ -1318,7 +1323,7 @@ input:checked + .slider:before { -webkit-transform: translateX(20px); -ms-transf
 }
 
 .goal-assistant-body { flex-grow: 1; padding: 0 24px 0; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
-.progress-bar-container { height: 8px; background-color: var(--button-bg-color); border-radius: 4px; overflow: hidden; margin-bottom: 24px; flex-shrink: 0; }
+.progress-bar-container { height: 6px; background-color: var(--button-bg-color); border-radius: 4px; overflow: hidden; margin-bottom: 24px; flex-shrink: 0; }
 .progress-bar { height: 100%; background-color: var(--primary-color); border-radius: 4px; transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .goal-assistant-step-content-animator { flex-grow: 1; }
 .goal-assistant-step-content-animator.forward { animation: slide-in-forward 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -1380,7 +1385,7 @@ input:checked + .slider:before { -webkit-transform: translateX(20px); -ms-transf
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
   padding: 10px;
   border-radius: 20px;
@@ -1518,7 +1523,7 @@ input:checked + .slider:before { -webkit-transform: translateX(20px); -ms-transf
   .main-page-layout { min-height: 100vh; min-height: -webkit-fill-available; }
   .container { padding: 12px; padding-top: 30px; }
   .header-title-group h1 { font-size: 1.6rem; }
-  .header-title-group { gap: 8px; }
+  .header-title-group { gap: 12px; }
   .header-inline-actions { gap: 4px; }
   .header-icon-button svg { width: 22px; height: 22px; }
 
@@ -1608,5 +1613,30 @@ input:checked + .slider:before { -webkit-transform: translateX(20px); -ms-transf
 .profile-popover .popover-action-button span {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+}
+
+/* Section spacing improvements */
+.all-assignments-section {
+  margin-top: 32px;
+}
+
+/* Card text line-height improvements */
+.todo-text,
+.todo-meta-badges,
+.todo-deadline,
+.streak-indicator {
+  line-height: 1.35;
+}
+
+/* Calendar weekdays brightness improvement */
+.calendar-days-of-week {
+  opacity: 0.8;
+}
+
+/* Header title perfect alignment */
+.header-title-group h1 {
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
